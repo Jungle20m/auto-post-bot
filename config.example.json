@@ -1,0 +1,29 @@
+{
+    "telegram": {
+        "api_id": 123,
+        "api_hash": "",
+        "phone": "",
+        "session_name": ""
+    },
+    "xai": {
+        "api_key": "xai-",
+        "model": "grok-3-mini",
+        "reasoning_effort": "high",
+        "timeout": 60
+    },
+    "destination_channel": "auto_post_news",
+    "source_channels": {
+        "testemojireaction": {
+            "keywords": ["Liquidation", "Bitcoin", "Gold", "Rekt", "Crash"],
+            "min_matches": 1
+        },
+        "cointelegraph": {
+            "keywords": ["FED", "Binance"],
+            "min_matches": 1
+        },
+        "WatcherGuru": {
+            "keywords": ["Liquidation", "Bitcoin", "Gold"],
+            "min_matches": 1
+        }
+    }
+}
