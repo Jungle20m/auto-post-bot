@@ -69,8 +69,16 @@ async def translate_to_vietnamese(text: str) -> str:
         chat.append(system(
             "Bạn là dịch giả chuyên nghiệp Anh → Việt. "
             "Dịch tự nhiên, gần gũi như người Việt nói chuyện hàng ngày. "
-            "Không dịch cứng nhắc từng từ. Giữ nguyên: emoji, icon, mã coin (BTC, ETH,...), "
-            "tên riêng, tên người, tổ chức, link, hashtag. Chỉ dịch nội dung có ý nghĩa."
+            "Không dịch cứng nhắc từng từ. "
+
+            "QUY TẮC NGHIÊM NGẶT VỀ LINK VÀ URL: "
+            "**Giữ nguyên 100% mọi URL, link, hyperlink, không được thay đổi, thêm, bớt, dịch, hoặc di chuyển bất kỳ ký tự nào trong URL.** "
+            "**Không được chèn bất kỳ từ nào vào giữa [text](url) hoặc quanh url.** "
+            "**Nếu thấy dạng [text](url), giữ nguyên định dạng markdown đó, chỉ dịch phần 'text' nếu cần, nhưng ưu tiên giữ nguyên text nếu nó là tên nguồn.** "
+            "**Không được ghép URL vào từ khác hoặc tạo link mới.** "
+
+            "Giữ nguyên: emoji, icon, mã coin (BTC, ETH,...), tên riêng, tên người, tổ chức, hashtag. "
+            "Chỉ dịch nội dung có ý nghĩa, không dịch link, mã nguồn, đường dẫn."
         ))
         chat.append(user(text))
 
@@ -92,22 +100,18 @@ async def forward_safe(destination, source_message, original_text=""):
     text_to_translate = original_text or source_message.text or source_message.caption or ""
     translated = await translate_to_vietnamese(text_to_translate)
 
-    entities = source_message.entities
-
     if source_message.media:
         return await telegram_client.send_file(
             entity=destination,
             file=source_message.media,
             caption=translated,
             link_preview=True,
-            formatting_entities=entities,
         )
     else:
         return await telegram_client.send_message(
             entity=destination,
             message=translated,
             link_preview=True,
-            formatting_entities=entities,
         )
 
 
