@@ -35,7 +35,6 @@ XAI_REASONING_EFFORT = xai_cfg["reasoning_effort"]
 XAI_TIMEOUT = xai_cfg["timeout"]
 
 # Destination & Sources
-DEST_CHANNEL = config["destination_channel"]
 SOURCE_CONFIG = config["source_channels"]
 SOURCE_CHATS = list(SOURCE_CONFIG.keys())
 
@@ -53,7 +52,7 @@ xai_client = Client(
 # ────────────────────────────────────────────────
 # Dịch văn bản bằng Grok
 # ────────────────────────────────────────────────
-async def translate_to_vietnamese(text: str) -> str:
+async def translate_to_vietnamese(text: str, prompt: str) -> str:
     if not text or not text.strip():
         return text
 
@@ -66,20 +65,7 @@ async def translate_to_vietnamese(text: str) -> str:
             store_messages=False
         )
 
-        chat.append(system(
-            "Bạn là dịch giả chuyên nghiệp Anh → Việt. "
-            "Dịch tự nhiên, gần gũi như người Việt nói chuyện hàng ngày. "
-            "Không dịch cứng nhắc từng từ. "
-
-            "QUY TẮC NGHIÊM NGẶT VỀ LINK VÀ URL: "
-            "**Giữ nguyên 100% mọi URL, link, hyperlink, không được thay đổi, thêm, bớt, dịch, hoặc di chuyển bất kỳ ký tự nào trong URL.** "
-            "**Không được chèn bất kỳ từ nào vào giữa [text](url) hoặc quanh url.** "
-            "**Nếu thấy dạng [text](url), giữ nguyên định dạng markdown đó, chỉ dịch phần 'text' nếu cần, nhưng ưu tiên giữ nguyên text nếu nó là tên nguồn.** "
-            "**Không được ghép URL vào từ khác hoặc tạo link mới.** "
-
-            "Giữ nguyên: emoji, icon, mã coin (BTC, ETH,...), tên riêng, tên người, tổ chức, hashtag. "
-            "Chỉ dịch nội dung có ý nghĩa, không dịch link, mã nguồn, đường dẫn."
-        ))
+        chat.append(system(prompt))
         chat.append(user(text))
 
         response = chat.sample()
@@ -96,21 +82,25 @@ async def translate_to_vietnamese(text: str) -> str:
 # ────────────────────────────────────────────────
 # Helper: Forward (text hoặc media) với nội dung đã dịch
 # ────────────────────────────────────────────────
-async def forward_safe(destination, source_message, original_text=""):
+async def forward_safe(destination, source_message, prompt, original_text="", template="{}"):
     text_to_translate = original_text or source_message.text or source_message.caption or ""
-    translated = await translate_to_vietnamese(text_to_translate)
+    translated = await translate_to_vietnamese(text_to_translate, prompt)
+    try:
+        formatted = template.format(translated)
+    except Exception:
+        formatted = translated
 
     if source_message.media:
         return await telegram_client.send_file(
             entity=destination,
             file=source_message.media,
-            caption=translated,
+            caption=formatted,
             link_preview=True,
         )
     else:
         return await telegram_client.send_message(
             entity=destination,
-            message=translated,
+            message=formatted,
             link_preview=True,
         )
 
@@ -149,10 +139,18 @@ async def album_handler(event: Album.Event):
         return
 
     try:
+        dest_channel = cfg.get("destination_channel")
+        prompt = cfg.get("prompt", "Dịch sang tiếng Việt.")
+        template = cfg.get("template", "{}")
+        translated_caption = await translate_to_vietnamese(caption, prompt)
+        try:
+            formatted_caption = template.format(translated_caption)
+        except Exception:
+            formatted_caption = translated_caption
         sent = await telegram_client.send_file(
-            entity=DEST_CHANNEL,
+            entity=dest_channel,
             file=media_files,
-            caption=await translate_to_vietnamese(caption),
+            caption=formatted_caption,
             link_preview=True,
         )
         source_name = chat.title or username or chat_id
@@ -196,7 +194,10 @@ async def single_handler(event):
         return
 
     try:
-        sent = await forward_safe(DEST_CHANNEL, msg, content)
+        dest_channel = cfg.get("destination_channel")
+        prompt = cfg.get("prompt", "Dịch sang tiếng Việt.")
+        template = cfg.get("template", "{}")
+        sent = await forward_safe(dest_channel, msg, prompt, content, template)
         source_name = chat.title or username or chat_id
         print(f"→ SINGLE forwarded | {source_name} | id {msg.id} | "
               f"kw: {', '.join(matched)} | {'media' if msg.media else 'text'} | dest id: {sent.id}")
@@ -217,9 +218,9 @@ async def main():
     print("\nTheo dõi nguồn (dịch sang tiếng Việt):")
     for src, cfg in SOURCE_CONFIG.items():
         kw_text = "TẤT CẢ" if not cfg["keywords"] else ", ".join(cfg["keywords"])
-        print(f"  • {src:22} | {kw_text} (min {cfg.get('min_matches', 1)})")
+        dest_channel = cfg.get("destination_channel", "(chưa cấu hình)")
+        print(f"  • {src:22} | {kw_text} (min {cfg.get('min_matches', 1)}) → {dest_channel}")
 
-    print(f"\nĐích: {DEST_CHANNEL}")
     print("Đang lắng nghe...\n")
 
     await telegram_client.run_until_disconnected()

@@ -11,19 +11,76 @@
         "reasoning_effort": "high",
         "timeout": 60
     },
-    "destination_channel": "auto_post_news",
     "source_channels": {
-        "testemojireaction": {
-            "keywords": ["Liquidation", "Bitcoin", "Gold", "Rekt", "Crash"],
-            "min_matches": 1
-        },
-        "cointelegraph": {
-            "keywords": ["FED", "Binance"],
-            "min_matches": 1
+        "whale_alert_io": {
+            "keywords": ["Minted", "Burned", "$1B", "1B$"],
+            "min_matches": 1,
+            "destination_channel": "auto_post_news",
+            "prompt": "Bạn là dịch giả chuyên nghiệp Anh → Việt. Dịch tự nhiên, gần gũi như người Việt nói chuyện hàng ngày. Không dịch cứng nhắc từng từ. QUY TẮC NGHIÊM NGẶT VỀ LINK VÀ URL: **Giữ nguyên 100% mọi URL, link, hyperlink, không được thay đổi, thêm, bớt, dịch, hoặc di chuyển bất kỳ ký tự nào trong URL.** **Không được chèn bất kỳ từ nào vào giữa [text](url) hoặc quanh url.** **Nếu thấy dạng [text](url), giữ nguyên định dạng markdown đó, chỉ dịch phần 'text' nếu cần, nhưng ưu tiên giữ nguyên text nếu nó là tên nguồn.** **Không được ghép URL vào từ khác hoặc tạo link mới.** Giữ nguyên: emoji, icon, mã coin (BTC, ETH,...), tên riêng, tên người, tổ chức, hashtag. Chỉ dịch nội dung có ý nghĩa, không dịch link, mã nguồn, đường dẫn.",
+            "template": "🔥 NÓNG: {}\n\n@bccapital_channel"
         },
         "WatcherGuru": {
-            "keywords": ["Liquidation", "Bitcoin", "Gold"],
-            "min_matches": 1
+            "keywords": ["Michael Saylor"],
+            "min_matches": 1,
+            "destination_channel": "auto_post_news",
+            "prompt": "Bạn là dịch giả chuyên nghiệp Anh → Việt. Dịch tự nhiên, gần gũi như người Việt nói chuyện hàng ngày. Không dịch cứng nhắc từng từ. QUY TẮC NGHIÊM NGẶT VỀ LINK VÀ URL: **Giữ nguyên 100% mọi URL, link, hyperlink, không được thay đổi, thêm, bớt, dịch, hoặc di chuyển bất kỳ ký tự nào trong URL.** **Không được chèn bất kỳ từ nào vào giữa [text](url) hoặc quanh url.** **Nếu thấy dạng [text](url), giữ nguyên định dạng markdown đó, chỉ dịch phần 'text' nếu cần, nhưng ưu tiên giữ nguyên text nếu nó là tên nguồn.** **Không được ghép URL vào từ khác hoặc tạo link mới.** Giữ nguyên: emoji, icon, mã coin (BTC, ETH,...), tên riêng, tên người, tổ chức, hashtag. Chỉ dịch nội dung có ý nghĩa, không dịch link, mã nguồn, đường dẫn.",
+            "template": "🔥 NÓNG: {}\n\n@bccapital_channel"
+        },
+        "CoingraphNews": {
+            "keywords": [],
+            "min_matches": 1,
+            "destination_channel": "auto_post_news",
+            "prompt": "Bạn là dịch giả chuyên nghiệp Anh → Việt. Dịch tự nhiên, gần gũi như người Việt nói chuyện hàng ngày. Không dịch cứng nhắc từng từ. QUY TẮC NGHIÊM NGẶT VỀ LINK VÀ URL: **Giữ nguyên 100% mọi URL, link, hyperlink, không được thay đổi, thêm, bớt, dịch, hoặc di chuyển bất kỳ ký tự nào trong URL.** **Không được chèn bất kỳ từ nào vào giữa [text](url) hoặc quanh url.** **Nếu thấy dạng [text](url), giữ nguyên định dạng markdown đó, chỉ dịch phần 'text' nếu cần, nhưng ưu tiên giữ nguyên text nếu nó là tên nguồn.** **Không được ghép URL vào từ khác hoặc tạo link mới.** Giữ nguyên: emoji, icon, mã coin (BTC, ETH,...), tên riêng, tên người, tổ chức, hashtag. Chỉ dịch nội dung có ý nghĩa, không dịch link, mã nguồn, đường dẫn.",
+            "template": "{}"
+        },
+        "wublockchainenglish": {
+            "keywords": [],
+            "min_matches": 1,
+            "destination_channel": "auto_post_news",
+            "prompt": "Bạn là dịch giả chuyên nghiệp Anh → Việt. Dịch tự nhiên, gần gũi như người Việt nói chuyện hàng ngày. Không dịch cứng nhắc từng từ. QUY TẮC NGHIÊM NGẶT VỀ LINK VÀ URL: **Giữ nguyên 100% mọi URL, link, hyperlink, không được thay đổi, thêm, bớt, dịch, hoặc di chuyển bất kỳ ký tự nào trong URL.** **Không được chèn bất kỳ từ nào vào giữa [text](url) hoặc quanh url.** **Nếu thấy dạng [text](url), giữ nguyên định dạng markdown đó, chỉ dịch phần 'text' nếu cần, nhưng ưu tiên giữ nguyên text nếu nó là tên nguồn.** **Không được ghép URL vào từ khác hoặc tạo link mới.** Giữ nguyên: emoji, icon, mã coin (BTC, ETH,...), tên riêng, tên người, tổ chức, hashtag. Chỉ dịch nội dung có ý nghĩa, không dịch link, mã nguồn, đường dẫn.",
+            "template": "{}"
+        },
+        "bitcoin": {
+            "keywords": [],
+            "min_matches": 1,
+            "destination_channel": "auto_post_news",
+            "prompt": "Bạn là dịch giả chuyên nghiệp Anh → Việt. Dịch tự nhiên, gần gũi như người Việt nói chuyện hàng ngày. Không dịch cứng nhắc từng từ. QUY TẮC NGHIÊM NGẶT VỀ LINK VÀ URL: **Giữ nguyên 100% mọi URL, link, hyperlink, không được thay đổi, thêm, bớt, dịch, hoặc di chuyển bất kỳ ký tự nào trong URL.** **Không được chèn bất kỳ từ nào vào giữa [text](url) hoặc quanh url.** **Nếu thấy dạng [text](url), giữ nguyên định dạng markdown đó, chỉ dịch phần 'text' nếu cần, nhưng ưu tiên giữ nguyên text nếu nó là tên nguồn.** **Không được ghép URL vào từ khác hoặc tạo link mới.** Giữ nguyên: emoji, icon, mã coin (BTC, ETH,...), tên riêng, tên người, tổ chức, hashtag. Chỉ dịch nội dung có ý nghĩa, không dịch link, mã nguồn, đường dẫn.",
+            "template": "{}"
+        },
+        "cryptoquant_official": {
+            "keywords": [],
+            "min_matches": 1,
+            "destination_channel": "auto_post_news",
+            "prompt": "Bạn là dịch giả chuyên nghiệp Anh → Việt. Dịch tự nhiên, gần gũi như người Việt nói chuyện hàng ngày. Không dịch cứng nhắc từng từ. QUY TẮC NGHIÊM NGẶT VỀ LINK VÀ URL: **Giữ nguyên 100% mọi URL, link, hyperlink, không được thay đổi, thêm, bớt, dịch, hoặc di chuyển bất kỳ ký tự nào trong URL.** **Không được chèn bất kỳ từ nào vào giữa [text](url) hoặc quanh url.** **Nếu thấy dạng [text](url), giữ nguyên định dạng markdown đó, chỉ dịch phần 'text' nếu cần, nhưng ưu tiên giữ nguyên text nếu nó là tên nguồn.** **Không được ghép URL vào từ khác hoặc tạo link mới.** Giữ nguyên: emoji, icon, mã coin (BTC, ETH,...), tên riêng, tên người, tổ chức, hashtag. Chỉ dịch nội dung có ý nghĩa, không dịch link, mã nguồn, đường dẫn.",
+            "template": "{}"
+        },
+        "cointelegraph": {
+            "keywords": [],
+            "min_matches": 1,
+            "destination_channel": "auto_post_news",
+            "prompt": "Bạn là dịch giả chuyên nghiệp Anh → Việt. Dịch tự nhiên, gần gũi như người Việt nói chuyện hàng ngày. Không dịch cứng nhắc từng từ. QUY TẮC NGHIÊM NGẶT VỀ LINK VÀ URL: **Giữ nguyên 100% mọi URL, link, hyperlink, không được thay đổi, thêm, bớt, dịch, hoặc di chuyển bất kỳ ký tự nào trong URL.** **Không được chèn bất kỳ từ nào vào giữa [text](url) hoặc quanh url.** **Nếu thấy dạng [text](url), giữ nguyên định dạng markdown đó, chỉ dịch phần 'text' nếu cần, nhưng ưu tiên giữ nguyên text nếu nó là tên nguồn.** **Không được ghép URL vào từ khác hoặc tạo link mới.** Giữ nguyên: emoji, icon, mã coin (BTC, ETH,...), tên riêng, tên người, tổ chức, hashtag. Chỉ dịch nội dung có ý nghĩa, không dịch link, mã nguồn, đường dẫn.",
+            "template": "{}"
+        },
+        "shoalresearch": {
+            "keywords": [],
+            "min_matches": 1,
+            "destination_channel": "auto_post_news",
+            "prompt": "Bạn là dịch giả chuyên nghiệp Anh → Việt. Dịch tự nhiên, gần gũi như người Việt nói chuyện hàng ngày. Không dịch cứng nhắc từng từ. QUY TẮC NGHIÊM NGẶT VỀ LINK VÀ URL: **Giữ nguyên 100% mọi URL, link, hyperlink, không được thay đổi, thêm, bớt, dịch, hoặc di chuyển bất kỳ ký tự nào trong URL.** **Không được chèn bất kỳ từ nào vào giữa [text](url) hoặc quanh url.** **Nếu thấy dạng [text](url), giữ nguyên định dạng markdown đó, chỉ dịch phần 'text' nếu cần, nhưng ưu tiên giữ nguyên text nếu nó là tên nguồn.** **Không được ghép URL vào từ khác hoặc tạo link mới.** Giữ nguyên: emoji, icon, mã coin (BTC, ETH,...), tên riêng, tên người, tổ chức, hashtag. Chỉ dịch nội dung có ý nghĩa, không dịch link, mã nguồn, đường dẫn.",
+            "template": "{}"
+        },
+        "marketfeed": {
+            "keywords": [],
+            "min_matches": 1,
+            "destination_channel": "auto_post_news",
+            "prompt": "Bạn là dịch giả chuyên nghiệp Anh → Việt. Dịch tự nhiên, gần gũi như người Việt nói chuyện hàng ngày. Không dịch cứng nhắc từng từ. QUY TẮC NGHIÊM NGẶT VỀ LINK VÀ URL: **Giữ nguyên 100% mọi URL, link, hyperlink, không được thay đổi, thêm, bớt, dịch, hoặc di chuyển bất kỳ ký tự nào trong URL.** **Không được chèn bất kỳ từ nào vào giữa [text](url) hoặc quanh url.** **Nếu thấy dạng [text](url), giữ nguyên định dạng markdown đó, chỉ dịch phần 'text' nếu cần, nhưng ưu tiên giữ nguyên text nếu nó là tên nguồn.** **Không được ghép URL vào từ khác hoặc tạo link mới.** Giữ nguyên: emoji, icon, mã coin (BTC, ETH,...), tên riêng, tên người, tổ chức, hashtag. Chỉ dịch nội dung có ý nghĩa, không dịch link, mã nguồn, đường dẫn.",
+            "template": "{}"
+        },
+        "shinyoungglobal": {
+            "keywords": [],
+            "min_matches": 1,
+            "destination_channel": "auto_post_news",
+            "prompt": "Bạn là dịch giả chuyên nghiệp Anh → Việt. Dịch tự nhiên, gần gũi như người Việt nói chuyện hàng ngày. Không dịch cứng nhắc từng từ. QUY TẮC NGHIÊM NGẶT VỀ LINK VÀ URL: **Giữ nguyên 100% mọi URL, link, hyperlink, không được thay đổi, thêm, bớt, dịch, hoặc di chuyển bất kỳ ký tự nào trong URL.** **Không được chèn bất kỳ từ nào vào giữa [text](url) hoặc quanh url.** **Nếu thấy dạng [text](url), giữ nguyên định dạng markdown đó, chỉ dịch phần 'text' nếu cần, nhưng ưu tiên giữ nguyên text nếu nó là tên nguồn.** **Không được ghép URL vào từ khác hoặc tạo link mới.** Giữ nguyên: emoji, icon, mã coin (BTC, ETH,...), tên riêng, tên người, tổ chức, hashtag. Chỉ dịch nội dung có ý nghĩa, không dịch link, mã nguồn, đường dẫn.",
+            "template": "{}"
         }
     }
 }
