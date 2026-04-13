@@ -90,13 +90,23 @@ async def forward_safe(destination, source_message, prompt, original_text="", te
     except Exception:
         formatted = translated
 
+    # Check if media is a web page preview (MessageMediaWebPage)
+    from telethon.tl.types import MessageMediaWebPage
     if source_message.media:
-        return await telegram_client.send_file(
-            entity=destination,
-            file=source_message.media,
-            caption=formatted,
-            link_preview=True,
-        )
+        if isinstance(source_message.media, MessageMediaWebPage):
+            # Just send as text, not as file
+            return await telegram_client.send_message(
+                entity=destination,
+                message=formatted,
+                link_preview=True,
+            )
+        else:
+            return await telegram_client.send_file(
+                entity=destination,
+                file=source_message.media,
+                caption=formatted,
+                link_preview=True,
+            )
     else:
         return await telegram_client.send_message(
             entity=destination,
