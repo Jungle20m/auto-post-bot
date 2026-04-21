@@ -82,19 +82,40 @@ async def translate_to_vietnamese(text: str, prompt: str) -> str:
 # ────────────────────────────────────────────────
 # Helper: Forward (text hoặc media) với nội dung đã dịch
 # ────────────────────────────────────────────────
-async def forward_safe(destination, source_message, prompt, original_text="", template="{}"):
+async def forward_safe(destination, source_message, prompt, original_text="", template="{}", with_source=False):
     text_to_translate = original_text or source_message.text or source_message.caption or ""
     translated = await translate_to_vietnamese(text_to_translate, prompt)
+    from telethon.tl.types import MessageMediaWebPage
+    link = ""
+    if with_source:
+        # Build Telegram link
+        chat = getattr(source_message, 'chat', None)
+        chat_id = None
+        if chat:
+            chat_id = getattr(chat, 'username', None) or getattr(chat, 'id', None)
+        if not chat_id:
+            chat_id = getattr(source_message, 'peer_id', None)
+        msg_id = getattr(source_message, 'id', None)
+        if hasattr(source_message, '_chat_for_link'):
+            channel_for_link = source_message._chat_for_link
+        else:
+            channel_for_link = chat_id
+        if isinstance(channel_for_link, str) and channel_for_link.startswith("@"):
+            channel_username = channel_for_link
+        else:
+            channel_username = "@testemojireaction"
+        if msg_id:
+            link = f"https://t.me/{channel_username.lstrip('@')}/{msg_id}"
     try:
-        formatted = template.format(translated)
+        if with_source:
+            formatted = template.format(translated, link)
+        else:
+            formatted = template.format(translated)
     except Exception:
         formatted = translated
 
-    # Check if media is a web page preview (MessageMediaWebPage)
-    from telethon.tl.types import MessageMediaWebPage
     if source_message.media:
         if isinstance(source_message.media, MessageMediaWebPage):
-            # Just send as text, not as file
             return await telegram_client.send_message(
                 entity=destination,
                 message=formatted,
@@ -152,9 +173,35 @@ async def album_handler(event: Album.Event):
         dest_channel = cfg.get("destination_channel")
         prompt = cfg.get("prompt", "Dịch sang tiếng Việt.")
         template = cfg.get("template", "{}")
+        with_source = cfg.get("with_source", False)
+        if with_source:
+            # Gắn thêm thuộc tính để forward_safe biết nguồn
+            event._chat_for_link = chat_id
+        # Tạo một message giả để truyền vào forward_safe (vì album không có msg đơn lẻ)
+        # Lấy message đầu tiên làm đại diện để lấy id và chat
+        fake_msg = event.messages[0] if event.messages else None
+        if fake_msg and with_source:
+            fake_msg._chat_for_link = chat_id
+        # Gọi forward_safe để xử lý caption và link nếu cần
+        # Nhưng với album, vẫn phải gửi file qua send_file, nên chỉ xử lý formatted_caption
         translated_caption = await translate_to_vietnamese(caption, prompt)
+        link = ""
+        if with_source and fake_msg:
+            chat = getattr(fake_msg, 'chat', None)
+            chat_id2 = getattr(chat, 'username', None) or getattr(chat, 'id', None) if chat else None
+            msg_id = getattr(fake_msg, 'id', None)
+            channel_for_link = getattr(fake_msg, '_chat_for_link', chat_id2)
+            if isinstance(channel_for_link, str) and channel_for_link.startswith("@"):
+                channel_username = channel_for_link
+            else:
+                channel_username = "@testemojireaction"
+            if msg_id:
+                link = f"https://t.me/{channel_username.lstrip('@')}/{msg_id}"
         try:
-            formatted_caption = template.format(translated_caption)
+            if with_source:
+                formatted_caption = template.format(translated_caption, link)
+            else:
+                formatted_caption = template.format(translated_caption)
         except Exception:
             formatted_caption = translated_caption
         sent = await telegram_client.send_file(
@@ -207,7 +254,10 @@ async def single_handler(event):
         dest_channel = cfg.get("destination_channel")
         prompt = cfg.get("prompt", "Dịch sang tiếng Việt.")
         template = cfg.get("template", "{}")
-        sent = await forward_safe(dest_channel, msg, prompt, content, template)
+        with_source = cfg.get("with_source", False)
+        if with_source:
+            msg._chat_for_link = chat_id
+        sent = await forward_safe(dest_channel, msg, prompt, content, template, with_source)
         source_name = chat.title or username or chat_id
         print(f"→ SINGLE forwarded | {source_name} | id {msg.id} | "
               f"kw: {', '.join(matched)} | {'media' if msg.media else 'text'} | dest id: {sent.id}")
