@@ -90,22 +90,20 @@ async def forward_safe(destination, source_message, prompt, original_text="", te
     if with_source:
         # Build Telegram link
         chat = getattr(source_message, 'chat', None)
-        chat_id = None
-        if chat:
-            chat_id = getattr(chat, 'username', None) or getattr(chat, 'id', None)
-        if not chat_id:
-            chat_id = getattr(source_message, 'peer_id', None)
         msg_id = getattr(source_message, 'id', None)
-        if hasattr(source_message, '_chat_for_link'):
-            channel_for_link = source_message._chat_for_link
-        else:
-            channel_for_link = chat_id
-        if isinstance(channel_for_link, str) and channel_for_link.startswith("@"):
-            channel_username = channel_for_link
-        else:
-            channel_username = "@testemojireaction"
-        if msg_id:
-            link = f"https://t.me/{channel_username.lstrip('@')}/{msg_id}"
+        channel_username = None
+        # Ưu tiên lấy username từ chat
+        if chat and hasattr(chat, 'username') and chat.username:
+            channel_username = chat.username
+        # Nếu không có, thử lấy từ _chat_for_link nếu là string
+        elif hasattr(source_message, '_chat_for_link') and isinstance(source_message._chat_for_link, str):
+            channel_username = source_message._chat_for_link.lstrip('@')
+        # Nếu không có, thử lấy từ chat_id nếu là string
+        elif hasattr(source_message, 'chat_id') and isinstance(source_message.chat_id, str):
+            channel_username = source_message.chat_id.lstrip('@')
+        # Nếu vẫn không có, bỏ qua link
+        if channel_username and msg_id:
+            link = f"https://t.me/{channel_username}/{msg_id}"
     try:
         if with_source:
             formatted = template.format(translated, link)
@@ -188,17 +186,18 @@ async def album_handler(event: Album.Event):
         link = ""
         if with_source and fake_msg:
             chat = getattr(fake_msg, 'chat', None)
-            chat_id2 = getattr(chat, 'username', None) or getattr(chat, 'id', None) if chat else None
             msg_id = getattr(fake_msg, 'id', None)
-            channel_for_link = getattr(fake_msg, '_chat_for_link', chat_id2)
-            if isinstance(channel_for_link, str) and channel_for_link.startswith("@"):
-                channel_username = channel_for_link
-            else:
-                channel_username = "@testemojireaction"
-            if msg_id:
-                link = f"https://t.me/{channel_username.lstrip('@')}/{msg_id}"
+            channel_username = None
+            if chat and hasattr(chat, 'username') and chat.username:
+                channel_username = chat.username
+            elif hasattr(fake_msg, '_chat_for_link') and isinstance(fake_msg._chat_for_link, str):
+                channel_username = fake_msg._chat_for_link.lstrip('@')
+            elif hasattr(fake_msg, 'chat_id') and isinstance(fake_msg.chat_id, str):
+                channel_username = fake_msg.chat_id.lstrip('@')
+            if channel_username and msg_id:
+                link = f"https://t.me/{channel_username}/{msg_id}"
         try:
-            if with_source:
+            if with_source and link:
                 formatted_caption = template.format(translated_caption, link)
             else:
                 formatted_caption = template.format(translated_caption)
